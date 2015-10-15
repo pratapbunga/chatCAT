@@ -1,13 +1,40 @@
-module.exports = function(express, app){
+module.exports = function(express, app, passport){
 	var router = express.Router();
+
+	function securePages(req, res, next){
+		if(req.isAuthenticated()){
+			next();
+		} else {
+			res.redirect('/');
+		}
+	}
 
 	router.get('/', function(req, res, next){
 		res.render('index', {title : 'chatCAT'});
 	})
 
-	router.get('/chatrooms', function(req, res, next){
-		res.render('chatrooms', {title : 'chatrooms'})
+	// Facebook call back Routes
+	router.get('/auth/facebook', passport.authenticate('facebook'));
+	router.get('/auth/facebook/callback', passport.authenticate('facebook', {
+		successRedirect : '/chatrooms',
+		failureRedirect : '/'
+	}))
+
+	router.get('/chatrooms', securePages ,function(req, res, next){
+		res.render('chatrooms', {title : 'chatrooms', user : req.user})
 	})
+
+	router.get('/logout', function(req, res, next){
+		req.logout();
+		res.redirect('/');
+	})
+
+
+
+
+
+
+
 
 	router.get('/setColor', function(req, res, next){
 		req.session.favColor = "White";

@@ -9,6 +9,7 @@ var express = require('express'),
 	mongoose = require('mongoose').connect(config.dbUrl),
 	passport = require('passport'),
 	FacebookStrategy = require('passport-facebook').Strategy,
+	rooms = []
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('hogan-express'));
@@ -50,16 +51,32 @@ John.save(function(err){
 	console.log('Done!');
 })
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 //Load the module like this in other files
-require('./routes/routes.js')(express, app);
+require('./routes/routes.js')(express, app, passport);
+
+
+require('./socket/socket.js')(io, rooms);
 
 
 
 
-app.listen(3000, function(){
-	console.log('ChatCAT Application on port 3000');
-	console.log('MODE: ' + env);
-});
+// app.listen(3000, function(){
+// 	console.log('ChatCAT Application on port 3000');
+// 	console.log('MODE: ' + env);
+// });
+app.set('port', process.env.PORT || 3000 );
+var server = require('http').createServer(app);
+var io = require('io').listen(server);
+
+server.listen(app.get('port'), function(){
+	console.log('Server Running on PORT: ' + app.get('port'));
+})
+
+
+
 
 // mongodb://chatcat:admin@ds043200.mongolab.com:43200/chatcat
