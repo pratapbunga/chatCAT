@@ -6,6 +6,38 @@
 	<link rel="stylesheet" href="../css/chatroom.css">
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script type="text/javascript" src="socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var host = '{{config.host}}';
+			var socket = io.connect(host + '/roomlist');
+
+			socket.on('connect', function(){
+				console.log('connection Established');
+			})
+
+			socket.on('roomupdate', function(data){
+				var procData = JSON.parse(data);
+				$('.roomlist').html('')
+				for( var i=0; i<procData.length; i++){
+					var str = '<a href="room/' + procData[i].room_number + '" ><li>' +procData[i].room_name + '</li></a>' ;
+					$('.roomlist').prepend(str);
+				}
+			})
+
+			$(document).on('click', '#create', function(){
+				var room_name = $('.newRoom').val();
+				if(room_name != ''){
+					var room_number = parseInt(Math.random()*10000);
+
+					//This event will listen in the nodeJS app to take place the rest of the functionality
+					socket.emit('newroom', {room_name: room_name, room_number:room_number});
+					$('.newRoom').val('');
+
+					// $('.newRoom').clear();
+				}
+			})
+		})
+	</script>
 	
 </head>
 <body>
@@ -21,9 +53,9 @@
 		</div>
 		<div class="cr-roomlist">
 			<ul class="roomlist">
-				<a href="#"><li>NodeJS</li></a>
+				<!-- <a href="#"><li>NodeJS</li></a>
 				<a href="#"><li>Cloud Computing</li></a>
-				<a href="#"><li>MongoDB</li></a>
+				<a href="#"><li>MongoDB</li></a> -->
 			</ul>
 		</div>
 	</div>

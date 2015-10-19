@@ -56,10 +56,9 @@ app.use(passport.session());
 
 require('./auth/passportAuth.js')(passport, FacebookStrategy, config, mongoose);
 //Load the module like this in other files
-require('./routes/routes.js')(express, app, passport);
+require('./routes/routes.js')(express, app, passport, config, rooms);
 
 
-require('./socket/socket.js')(io, rooms);
 
 
 
@@ -70,7 +69,9 @@ require('./socket/socket.js')(io, rooms);
 // });
 app.set('port', process.env.PORT || 3000 );
 var server = require('http').createServer(app);
-var io = require('io').listen(server);
+var io = require('socket.io').listen(server);
+
+require('./socket/socket.js')(io, rooms);
 
 server.listen(app.get('port'), function(){
 	console.log('Server Running on PORT: ' + app.get('port'));
