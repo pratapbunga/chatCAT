@@ -48,7 +48,7 @@
 			$(str).hide().prependTo($('.messages')).slideDown(100);
 		}
 
-		messages.on('updateUsersList', function(data){
+		messages.on('updateUserList', function(data){
 			var userlist = JSON.parse(data);
 			console.log('DAta received about users  ' + data)
 			$('.users').html('');
