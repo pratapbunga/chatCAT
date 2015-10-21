@@ -28,7 +28,7 @@ module.exports = function(io, rooms){
 
 		function updateUserList(room, updateAll){
 			console.log('came in updateUserList function !!');
-			var getUsers = io.of('/messages').clients(room);
+			var getUsers = io.of('/messages').client(room);
 			var userlist = [];
 			for (var i in getUsers){
 				userlist.push({user:getUsers[i].username, userPic:getUsers[i].userPic})
