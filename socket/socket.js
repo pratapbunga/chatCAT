@@ -36,6 +36,7 @@ module.exports = function(io, rooms){
 
 			socket.to(room).emit('updateUserList', JSON.stringify(userlist));
 			if(updateAll){
+				console.log('updateAll checking ++++++++++++++ '+JSON.stringify(userlist))
 				socket.broadcast.to(room).emit('updateUserList', JSON.stringify(userlist));
 			}	
 		}
