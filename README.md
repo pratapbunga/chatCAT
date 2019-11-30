@@ -1,2 +1,1 @@
-# chatCAT
-Udemy # ChatCAT project
+Chat Application - Using sockets.io
